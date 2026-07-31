@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from .config import Config
@@ -10,33 +10,39 @@ logger = logging.getLogger(__name__)
 # Get DATABASE_URL from config
 DATABASE_URL = Config.DATABASE_URL
 
+logger.info(f"🔗 Attempting to connect to: {DATABASE_URL.split('@')[0] if '@' in DATABASE_URL else 'Invalid URL'}")
+
 # Add SSL parameters for Render PostgreSQL
 if 'render.com' in DATABASE_URL or 'onrender.com' in DATABASE_URL:
-    # Render requires SSL
+    logger.info("🔒 Detected Render PostgreSQL - adding SSL")
     if '?' not in DATABASE_URL:
         DATABASE_URL = f"{DATABASE_URL}?sslmode=require"
     elif 'sslmode' not in DATABASE_URL:
         DATABASE_URL = f"{DATABASE_URL}&sslmode=require"
 
-logger.info(f"🔗 Database connection: {DATABASE_URL.split('@')[0] if '@' in DATABASE_URL else 'Configured'}")
+# Create engine with connection pooling
+try:
+    engine = create_engine(
+        DATABASE_URL,
+        pool_pre_ping=True,
+        pool_size=5,
+        max_overflow=10,
+        echo=False,
+    )
+    logger.info("✅ Database engine created successfully")
+except Exception as e:
+    logger.error(f"❌ Failed to create database engine: {e}")
+    engine = None
 
-# Create engine with connection pooling for production
-engine = create_engine(
-    DATABASE_URL,
-    pool_pre_ping=True,
-    pool_size=10,
-    max_overflow=20,
-    echo=False,  # Set to True for debugging
-    connect_args={
-        "connect_timeout": 10,
-    } if 'postgresql' in DATABASE_URL else {}
-)
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine) if engine else None
 Base = declarative_base()
 
 def get_db():
     """Dependency for FastAPI routes"""
+    if SessionLocal is None:
+        logger.error("❌ Database not initialized")
+        raise Exception("Database not initialized")
+    
     db = SessionLocal()
     try:
         yield db
@@ -49,11 +55,20 @@ def get_db():
 
 def test_connection():
     """Test database connection"""
+    if engine is None:
+        logger.error("❌ No database engine available")
+        return False
+    
     try:
+        if SessionLocal is None:
+            logger.error("❌ No session available")
+            return False
+        
         db = SessionLocal()
-        db.execute("SELECT 1")
+        result = db.execute(text("SELECT 1"))
         db.close()
+        logger.info("✅ Database connection test successful")
         return True
     except Exception as e:
-        logger.error(f"Database connection test failed: {e}")
+        logger.error(f"❌ Database connection test failed: {e}")
         return False
