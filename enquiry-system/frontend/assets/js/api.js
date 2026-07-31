@@ -12,7 +12,7 @@ const API_BASE_URL = (() => {
     return 'http://localhost:8000/api/v1';
 })();
 
-const API_URL = API_BASE_URL;
+const API_URL = 'https://vattalstudi.onrender.com/api/v1';
 
 console.log(`🌐 API URL: ${API_URL}`);
 
