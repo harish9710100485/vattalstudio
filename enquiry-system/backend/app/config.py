@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import logging
 
-# Try to load .env file, but don't fail if it doesn't exist
+# Try to load .env file
 try:
     load_dotenv()
 except:
@@ -11,10 +11,18 @@ except:
 logger = logging.getLogger(__name__)
 
 class Config:
-    # Database URL - Render will inject this via environment variable
-    DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://postgres:1234@localhost:5432/enquiry_db')
+    # Database URL - from environment
+    DATABASE_URL = os.getenv('DATABASE_URL')
     
-    # If using Render's internal PostgreSQL, convert postgres:// to postgresql://
+    # Debug: Log what we're getting
+    logger.info(f"🔍 DATABASE_URL from env: {DATABASE_URL}")
+    
+    # If not found, use fallback
+    if not DATABASE_URL:
+        logger.warning("⚠️ DATABASE_URL not found in environment! Using fallback.")
+        DATABASE_URL = 'postgresql://postgres:1234@localhost:5432/enquiry_db'
+    
+    # Convert postgres:// to postgresql:// if needed
     if DATABASE_URL and DATABASE_URL.startswith('postgres://'):
         DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
     
@@ -25,12 +33,13 @@ class Config:
     
     # File Upload
     UPLOAD_DIR = os.getenv('UPLOAD_DIR', './uploads')
+    logger.info(f"📁 UPLOAD_DIR from env: {UPLOAD_DIR}")
     
     # Admin Credentials
     ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'admin@vattalstudios.com')
     ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'admin123')
     
-    # CORS - Allow multiple origins
+    # CORS
     ALLOWED_ORIGINS = os.getenv('ALLOWED_ORIGINS', '').split(',') if os.getenv('ALLOWED_ORIGINS') else [
         "https://vattal-studio.vercel.app",
         "https://vattalstudio.vercel.app",
@@ -45,16 +54,4 @@ class Config:
     
     # Environment
     ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
-    
-    @classmethod
-    def validate(cls):
-        """Validate required configuration"""
-        if not cls.SECRET_KEY or cls.SECRET_KEY == 'your-secret-key-change-this-in-production':
-            logger.warning("⚠️ Using default SECRET_KEY - Change this in production!")
-        if not cls.ENCRYPTION_KEY:
-            logger.warning("⚠️ ENCRYPTION_KEY not set - IDs will not be encrypted!")
-        if cls.ENVIRONMENT == 'production' and cls.DATABASE_URL and 'localhost' in cls.DATABASE_URL:
-            logger.warning("⚠️ Using localhost database in production!")
-
-# Validate on import
-Config.validate()
+    logger.info(f"🌍 ENVIRONMENT from env: {ENVIRONMENT}")
