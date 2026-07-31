@@ -1,0 +1,189 @@
+/* ========================================
+   VATTAL STUDIOS - DARK THEME
+   ALL UNDER ONE ROOF
+   ======================================== */
+
+/* ===== BRAND COLORS ===== */
+:root {
+    --vattal-primary: #18191b;      /* Dark background */
+    --vattal-secondary: #2d2d2d;    /* Lighter dark */
+    --vattal-accent: #f59e0b;       /* Amber 500 */
+    --vattal-accent-hover: #d97706; /* Amber 600 */
+    --vattal-text: #e5e7eb;         /* Light gray text */
+    --vattal-text-muted: #9ca3af;   /* Muted gray */
+}
+
+/* ===== NAVBAR ===== */
+.navbar-dark {
+    background: #18191b;
+    border-bottom: 2px solid #f59e0b;
+}
+
+/* ===== SIDEBAR DARK LINKS ===== */
+.sidebar-link-dark {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.25rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    color: #9ca3af;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.sidebar-link-dark:hover {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.sidebar-link-dark.active {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05));
+    color: #f59e0b;
+    font-weight: 600;
+    border-right: 3px solid #f59e0b;
+}
+
+.sidebar-link-dark i {
+    font-size: 1.1rem;
+    width: 1.75rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.sidebar-link-dark span {
+    margin-left: 0.75rem;
+}
+
+/* ===== DARK SCROLLBAR ===== */
+#sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+#sidebar::-webkit-scrollbar-track {
+    background: #18191b;
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+    background: #f59e0b;
+    border-radius: 4px;
+}
+
+#sidebar::-webkit-scrollbar-thumb:hover {
+    background: #d97706;
+}
+
+/* ===== STATUS BADGES ===== */
+.status-pending { 
+    background: #fef3c7; 
+    color: #92400e; 
+    border-left: 3px solid #f59e0b;
+}
+
+.status-in_review { 
+    background: #dbeafe; 
+    color: #1e40af; 
+    border-left: 3px solid #3b82f6;
+}
+
+.status-approved { 
+    background: #d1fae5; 
+    color: #065f46; 
+    border-left: 3px solid #10b981;
+}
+
+.status-rejected { 
+    background: #fee2e2; 
+    color: #991b1b; 
+    border-left: 3px solid #ef4444;
+}
+
+/* ===== TOAST NOTIFICATIONS ===== */
+.toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    padding: 14px 24px;
+    border-radius: 12px;
+    color: white;
+    z-index: 9999;
+    animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    font-weight: 500;
+    max-width: 400px;
+}
+
+.toast-success { 
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border-left: 4px solid #b45309;
+}
+
+.toast-error { 
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border-left: 4px solid #b91c1c;
+}
+
+.toast-info { 
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border-left: 4px solid #1d4ed8;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(120%) scale(0.8); opacity: 0; }
+    to { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+/* ===== TABLE HOVER ===== */
+tr:hover { 
+    background: rgba(245, 158, 11, 0.05); 
+    cursor: pointer; 
+}
+
+/* ===== VATTAL BUTTON ===== */
+.btn-vattal {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-vattal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 40px rgba(245, 158, 11, 0.3);
+}
+
+/* ===== OVERLAY ===== */
+#sidebarOverlay {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ===== LOGO ANIMATION ===== */
+@keyframes vattalPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+.vattal-logo {
+    animation: vattalPulse 3s infinite ease-in-out;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+    .toast {
+        top: 16px;
+        right: 16px;
+        left: 16px;
+        max-width: none;
+        font-size: 14px;
+    }
+}
+

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Submit Enquiry - Vattal Studios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- ===== TOP NAVBAR ===== -->
+    <nav class="bg-[#18191b] shadow-lg sticky top-0 z-40 border-b-2 border-amber-500">
+        <div class="flex justify-between items-center h-20 px-4">
+            <!-- Left: Hamburger + Logo -->
+            <div class="flex items-center">
+                <button onclick="toggleSidebar()" class="text-gray-400 hover:text-amber-500 transition p-2 hover:bg-amber-500/10 rounded-lg">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+                
+                <!-- Vattal Logo Image - BIGGER -->
+                <a href="index.html" class="flex items-center ml-3 group">
+                    <img src="assets/images/vattal-logo.png" 
+                         alt="Vattal Studios - All Under One Roof" 
+                         class="h-16 w-auto object-contain brightness-0 invert group-hover:scale-105 transition-transform duration-300" />
+                </a>
+            </div>
+
+            <!-- Right: User Info + Logout -->
+            <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-400 hidden md:block" id="adminName"></span>
+                <button onclick="logout()" class="text-red-500 hover:text-red-700 hidden" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== SIDE DRAWER MENU ===== -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-50 hidden" onclick="closeSidebar()"></div>
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-72 bg-[#18191b] shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 ease-in-out overflow-y-auto">
+        <!-- Sidebar Header -->
+        <div class="bg-gradient-to-br from-[#18191b] to-[#2d2d2d] p-6 border-b border-amber-500/20">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center space-x-3 group">
+                    <img src="assets/images/vattal-logo.png" 
+                         alt="Vattal Studios" 
+                         class="h-14 w-auto object-contain brightness-0 invert group-hover:scale-105 transition-transform duration-300" />
+                </a>
+                <button onclick="closeSidebar()" class="text-gray-400 hover:text-amber-500 transition">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <p class="text-amber-400 text-sm mt-3 border-t border-amber-500/20 pt-3">Project Enquiry Management</p>
+        </div>
+
+        <!-- Sidebar Navigation -->
+        <div class="p-4">
+            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Main Menu</div>
+            
+            <a href="index.html" class="sidebar-link-dark active" id="sideHome">
+                <i class="fas fa-home w-6 text-amber-500"></i>
+                <span>Raise Enquiry</span>
+            </a>
+            
+            <a href="login.html" class="sidebar-link-dark" id="sideLogin">
+                <i class="fas fa-sign-in-alt w-6 text-amber-500"></i>
+                <span>Admin Login</span>
+            </a>
+            
+            <a href="dashboard.html" class="sidebar-link-dark" id="sideDashboard">
+                <i class="fas fa-chart-pie w-6 text-amber-500"></i>
+                <span>Dashboard</span>
+            </a>
+            
+            <a href="report.html" class="sidebar-link-dark" id="sideReport">
+                <i class="fas fa-file-alt w-6 text-amber-500"></i>
+                <span>Reports</span>
+            </a>
+
+            <button onclick="logout()" class="sidebar-link-dark text-red-400 hover:bg-red-500/10 w-full text-left" id="sideLogout">
+                <i class="fas fa-sign-out-alt w-6 text-red-400"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+
+        <!-- Sidebar Footer -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-700 bg-[#1a1a1a]">
+            <div class="text-center">
+                <img src="assets/images/vattal-logo.png" 
+                     alt="Vattal Studios" 
+                     class="h-10 w-auto mx-auto opacity-60" />
+                <p class="text-[10px] text-gray-600 mt-2">© 2026 Vattal Studios. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== CINEMA ENQUIRY FORM ===== -->
+    <div class="max-w-4xl mx-auto px-4 py-8 w-full flex-1">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="flex items-center justify-center gap-3 mb-3">
+                <i class="fas fa-film text-4xl text-amber-500"></i>
+                <i class="fas fa-video text-4xl text-amber-400"></i>
+                <i class="fas fa-clapperboard text-4xl text-amber-600"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-900">Vattal Studios - Project Enquiry</h1>
+            <p class="text-gray-500 mt-2">Tell us about your film or video project and we'll get back to you</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-amber-500/20">
+            <!-- Form Header -->
+            <div class="bg-gradient-to-r from-[#18191b] to-[#2d2d2d] px-8 py-5 border-b border-amber-500/20">
+                <h2 class="text-xl font-semibold text-white">Project Enquiry Form</h2>
+                <p class="text-amber-400 text-sm">All fields marked with * are required</p>
+            </div>
+
+            <!-- Form Body -->
+            <form id="enquiryForm" class="p-8 space-y-6" novalidate>
+                <!-- SECTION: Personal Information -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <i class="fas fa-user-circle text-amber-500"></i>
+                        Personal Information
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Full Name <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-user absolute left-3 top-3.5 text-gray-400"></i>
+                                <input type="text" id="name" required
+                                    class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
+                                    placeholder="Enter your full name" />
+                            </div>
+                            <p class="text-red-500 text-xs hidden mt-1" id="nameError">Please enter your full name</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Email Address <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-envelope absolute left-3 top-3.5 text-gray-400"></i>
+                                <input type="email" id="email" required
+                                    class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
+                                    placeholder="abc@example.com" />
+                            </div>
+                            <p class="text-red-500 text-xs hidden mt-1" id="emailError">Please enter a valid email</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Phone Number <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-phone absolute left-3 top-3.5 text-gray-400"></i>
+                                <input type="tel" id="phone" required
+                                    class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
+                                    placeholder="+9710100XXX" />
+                            </div>
+                            <p class="text-red-500 text-xs hidden mt-1" id="phoneError">Please enter a valid phone number</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Company / Production House
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-building absolute left-3 top-3.5 text-gray-400"></i>
+                                <input type="text" id="company"
+                                    class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
+                                    placeholder="ABC Productions" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION: Project Details -->
+                <div class="pt-4 border-t border-gray-200">
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <i class="fas fa-film text-amber-500"></i>
+                        Project Details
+                    </h3>
+                    <div class="space-y-5">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Project Type <span class="text-red-500">*</span>
+                            </label>
+                            <select id="projectType" required
+                                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition">
+                                <option value="">Select project type</option>
+                                <option value="feature-film">Feature Film</option>
+                                <option value="short-film">Short Film</option>
+                                <option value="documentary">Documentary</option>
+                                <option value="music-video">Music Video</option>
+                                <option value="commercial">Commercial / Ad</option>
+                                <option value="corporate">Corporate Video</option>
+                                <option value="event">Event Coverage</option>
+                                <option value="animation">Animation</option>
+                                <option value="post-production">Post Production</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <p class="text-red-500 text-xs hidden mt-1" id="projectTypeError">Please select a project type</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Project Description <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-align-left absolute left-3 top-3.5 text-gray-400"></i>
+                                <textarea id="description" rows="5" required
+                                    class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition resize-y"
+                                    placeholder="Describe your film/video project... What's the story? What's the vision? Any specific requirements?"></textarea>
+                            </div>
+                            <div class="flex justify-between mt-1">
+                                <p class="text-red-500 text-xs hidden" id="descriptionError">Please describe your project</p>
+                                <span class="text-xs text-gray-400" id="charCount">0 / 3000 characters</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION: Production Details -->
+                <div class="pt-4 border-t border-gray-200">
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <i class="fas fa-clapperboard text-amber-500"></i>
+                        Production Details
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Production Stage
+                            </label>
+                            <select id="productionStage"
+                                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition">
+                                <option value="">Select production stage</option>
+                                <option value="development">Development</option>
+                                <option value="pre-production">Pre-Production</option>
+                                <option value="production">Production</option>
+                                <option value="post-production">Post-Production</option>
+                                <option value="distribution">Distribution</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Services Required <span class="text-red-500">*</span>
+                            </label>
+                            <select id="services" required
+                                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition">
+                                <option value="">Select services</option>
+                                <option value="full-production">Full Production</option>
+                                <option value="directing">Directing</option>
+                                <option value="cinematography">Cinematography</option>
+                                <option value="editing">Editing</option>
+                                <option value="sound-design">Sound Design</option>
+                                <option value="vfx">Visual Effects (VFX)</option>
+                                <option value="color-grading">Color Grading</option>
+                                <option value="screenwriting">Screenwriting</option>
+                                <option value="consulting">Consulting</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <p class="text-red-500 text-xs hidden mt-1" id="servicesError">Please select services required</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION: Additional Information -->
+<!-- SECTION: Additional Information -->
+<div class="pt-4 border-t border-gray-200">
+    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+        <i class="fas fa-paperclip text-amber-500"></i>
+        Attach File (Optional)
+    </h3>
+    <div>
+        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-amber-500 transition text-center cursor-pointer" id="dropZone">
+            <input type="file" id="fileUpload" class="hidden" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" />
+            <div id="uploadArea">
+                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+                <p class="mt-2 text-sm text-gray-600">Click to upload or drag and drop</p>
+                <p class="text-xs text-gray-400">PDF, DOC, DOCX, PNG, JPG (Max 5MB)</p>
+            </div>
+            <div id="filePreview" class="hidden mt-4">
+                <div class="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-file-pdf text-red-500 text-xl"></i>
+                        <span id="fileName" class="text-sm font-medium">file.pdf</span>
+                    </div>
+                    <button type="button" onclick="removeFile()" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                <!-- CAPTCHA & SUBMIT -->
+                <div class="pt-4 border-t border-gray-200">
+                    <div class="flex items-center gap-3 bg-gray-50 p-4 rounded-lg">
+                        <input type="checkbox" id="captcha" class="w-5 h-5 text-amber-500 rounded border-gray-300 focus:ring-amber-500" />
+                        <label class="text-sm text-gray-700">I'm not a robot</label>
+                        <span class="ml-auto text-xs text-gray-400">reCAPTCHA protected</span>
+                    </div>
+
+                    <button type="submit" id="submitBtn"
+                        class="w-full mt-6 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-semibold py-3.5 px-6 rounded-lg hover:shadow-lg hover:shadow-amber-500/25 transform hover:scale-[1.02] transition duration-200 flex items-center justify-center gap-2">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Submit Enquiry</span>
+                    </button>
+                    <p class="text-xs text-gray-500 text-center mt-3">
+                        By submitting, you agree to our <a href="#" class="text-amber-500 hover:underline">Privacy Policy</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl max-w-md w-full p-8 text-center">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check text-4xl text-green-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900">Enquiry Submitted!</h3>
+            <p class="text-gray-600 mt-2">Thank you for your enquiry. Our team will review and get back to you within 24 hours.</p>
+            <div class="bg-gray-50 rounded-lg p-4 mt-4 text-left">
+                <p class="text-sm text-gray-600"><span class="font-medium">Reference ID:</span> <span id="refId" class="font-mono text-amber-500">#VAT-2026-001</span></p>
+            </div>
+            <button onclick="closeSuccess()" class="mt-4 bg-amber-500 text-white font-semibold py-2.5 px-6 rounded-lg hover:bg-amber-600 transition">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-[#18191b] border-t border-gray-700 mt-8">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <img src="assets/images/vattal-logo.png" 
+                         alt="Vattal Studios" 
+                         class="h-8 w-auto object-contain brightness-0 invert opacity-60" />
+                    <span class="text-sm text-gray-500">© 2026 All rights reserved</span>
+                </div>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <a href="#" class="text-gray-500 hover:text-amber-500 transition"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-amber-500 transition"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-amber-500 transition"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-amber-500 transition"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+ <script>
+    window.API_URL = (() => {
+        if (window.location.hostname.includes('vercel.app') || 
+            window.location.hostname.includes('onrender.com')) {
+            return 'https://vattal-backend.onrender.com/api/v1';
+        }
+        return 'http://localhost:8000/api/v1';
+    })();
+    console.log(' API_URL:', window.API_URL);
+</script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/enquiry.js"></script>
+    <script src="assets/js/auth.js"></script> 
+    <script src="assets/js/chatbot.js"></script>
+</body>
+</html>
