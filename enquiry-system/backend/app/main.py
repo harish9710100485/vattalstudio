@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 import os
 from datetime import datetime
 import logging
@@ -11,7 +10,7 @@ from .routes import router
 from .models import User
 from .auth import hash_password
 
-# ===== LOGGING CONFIGURATION =====
+# ===== LOGGING =====
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -28,10 +27,8 @@ except Exception as e:
 
 # ===== CREATE DEFAULT USERS =====
 def create_default_users():
-    """Create default admin and employee users if they don't exist"""
     db = SessionLocal()
     try:
-        # Create admin user
         admin = db.query(User).filter(User.email == Config.ADMIN_EMAIL).first()
         if not admin:
             admin = User(
@@ -46,7 +43,6 @@ def create_default_users():
         else:
             logger.info(f"✅ Admin user already exists: {Config.ADMIN_EMAIL}")
         
-        # Create employee user
         employee = db.query(User).filter(User.email == "employee@example.com").first()
         if not employee:
             employee = User(
@@ -65,19 +61,16 @@ def create_default_users():
     except Exception as e:
         logger.error(f"❌ Error creating users: {e}")
         db.rollback()
-        import traceback
-        traceback.print_exc()
     finally:
         db.close()
 
-# Run default user creation
 create_default_users()
 
-# ===== TEST DATABASE CONNECTION =====
+# ===== TEST DATABASE =====
 if test_connection():
     logger.info("✅ Database connection successful")
 else:
-    logger.warning("⚠️ Database connection failed - check DATABASE_URL")
+    logger.warning("⚠️ Database connection failed")
 
 # ===== CREATE FASTAPI APP =====
 app = FastAPI(
@@ -88,7 +81,8 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# ===== CORS CONFIGURATION =====
+# ===== CORS CONFIGURATION - FIXED =====
+# Get allowed origins from environment or use defaults
 allowed_origins = Config.ALLOWED_ORIGINS if Config.ALLOWED_ORIGINS else [
     "https://vattal-studio.vercel.app",
     "https://vattalstudio.vercel.app",
@@ -98,13 +92,15 @@ allowed_origins = Config.ALLOWED_ORIGINS if Config.ALLOWED_ORIGINS else [
     "http://localhost:8000",
 ]
 
+# Add CORS middleware FIRST (before other middleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # OPTIONS is important!
     allow_headers=["*"],
     expose_headers=["*"],
+    max_age=3600,  # Cache preflight for 1 hour
 )
 
 logger.info(f"🌐 CORS allowed origins: {allowed_origins}")
@@ -159,8 +155,3 @@ async def startup():
     logger.info(f"📁 Uploads: {Config.UPLOAD_DIR}")
     logger.info(f"🔐 Admin: {Config.ADMIN_EMAIL}")
     logger.info("=" * 60)
-
-# ===== SHUTDOWN EVENT =====
-@app.on_event("shutdown")
-async def shutdown():
-    logger.info("👋 Vattal Studios API Shutting Down...")
