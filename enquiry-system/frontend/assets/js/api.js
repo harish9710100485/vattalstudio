@@ -1,18 +1,12 @@
 // API Client with dynamic URL based on environment
 
-// Determine API URL based on environment
-const API_BASE_URL = (() => {
-    // For production on Vercel
+const API_URL = (() => {
     if (window.location.hostname.includes('vercel.app') || 
         window.location.hostname.includes('onrender.com')) {
-        // Use Render backend URL
-        return 'https://vattal-backend.onrender.com/api/v1';
+        return 'https://vattalstudi.onrender.com/api/v1';
     }
-    // For local development
     return 'http://localhost:8000/api/v1';
 })();
-
-const API_URL = 'https://vattalstudi.onrender.com/api/v1';
 
 console.log(`🌐 API URL: ${API_URL}`);
 
@@ -35,7 +29,8 @@ const api = {
         const options = {
             method,
             headers: this.headers(),
-            credentials: 'same-origin',
+            mode: 'cors',  // Explicitly set CORS mode
+            credentials: 'include',  // Include cookies if needed
         };
         if (data) {
             options.body = JSON.stringify(data);
@@ -54,7 +49,6 @@ const api = {
                 throw new Error('Session expired. Please login again.');
             }
 
-            // Handle empty responses
             const text = await res.text();
             const result = text ? JSON.parse(text) : {};
             
