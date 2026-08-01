@@ -172,7 +172,6 @@ async function submitEnquiry(e) {
             captcha: true
         };
 
-        console.log('📤 Submitting enquiry:', data);
 
         // If there's a file, upload it first
         let fileUrl = null;
@@ -192,7 +191,6 @@ async function submitEnquiry(e) {
                 if (uploadResponse.ok) {
                     const uploadResult = await uploadResponse.json();
                     fileUrl = uploadResult.file_url;
-                    console.log('📎 File uploaded:', fileUrl);
                 }
             } catch (uploadError) {
                 console.warn('File upload error:', uploadError);
@@ -206,7 +204,6 @@ async function submitEnquiry(e) {
 
         // Submit enquiry
         const response = await api.post('/enquiries', data);
-        console.log('✅ Enquiry submitted:', response);
 
         // Show success
         const refId = document.getElementById('refId');
