@@ -82,7 +82,7 @@ def test_create_enquiry():
             json={
                 "name": f"Test User {int(time.time())}",
                 "email": f"test{int(time.time())}@example.com",
-                "phone": "+1 234-567-8900",
+                "phone": "+91 9898765431",
                 "company": "Test Company",
                 "project_type": "feature-film",
                 "project_description": "Load test enquiry",
@@ -105,7 +105,7 @@ def test_create_enquiry():
 
 def run_test(num_users=20):
     """Run load test with specified number of users"""
-    print(f"\n🚀 Starting load test with {num_users} users...")
+    print(f"\n Starting load test with {num_users} users...")
     print("=" * 50)
     
     threads = []
@@ -140,10 +140,10 @@ def run_test(num_users=20):
     total = results["success"] + results["failed"]
     response_times = results["response_times"]
     
-    print(f"\n📈 Total Requests: {total}")
-    print(f"✅ Successful: {results['success']}")
-    print(f"❌ Failed: {results['failed']}")
-    print(f"📊 Success Rate: {(results['success'] / total * 100) if total > 0 else 0:.2f}%")
+    print(f"\nTotal Requests: {total}")
+    print(f"Successful: {results['success']}")
+    print(f"Failed: {results['failed']}")
+    print(f"Success Rate: {(results['success'] / total * 100) if total > 0 else 0:.2f}%")
     
     if response_times:
         avg = sum(response_times) / len(response_times)
@@ -153,7 +153,7 @@ def run_test(num_users=20):
         max_time = max(sorted_times)
         min_time = min(sorted_times)
         
-        print(f"\n⏱️ Response Times (ms):")
+        print(f"\nResponse Times (ms):")
         print(f"   - Average: {avg:.2f}ms")
         print(f"   - Min: {min_time:.2f}ms")
         print(f"   - Max: {max_time:.2f}ms")
@@ -161,7 +161,7 @@ def run_test(num_users=20):
         print(f"   - 99th Percentile: {p99:.2f}ms")
     
     print("\n" + "=" * 50)
-    print("✅ Load test completed!")
+    print("Load test completed!")
     print("=" * 50)
 
 if __name__ == "__main__":
