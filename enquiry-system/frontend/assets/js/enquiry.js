@@ -179,15 +179,12 @@ async function submitEnquiry(e) {
         let fileUrl = null;
         if (selectedFile) {
             try {
-                console.log('📎 Uploading file:', selectedFile.name);
                 
                 // Use the api.uploadFile method instead of hardcoded localhost
                 const uploadResult = await api.uploadFile('/enquiries/upload', selectedFile);
                 fileUrl = uploadResult.file_url;
-                console.log('📎 File uploaded successfully:', fileUrl);
                 
             } catch (uploadError) {
-                console.warn('File upload error:', uploadError);
                 showToast('warning', 'File upload failed, but enquiry will still be submitted.');
             }
         }
