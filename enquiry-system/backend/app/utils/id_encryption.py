@@ -12,7 +12,7 @@ ENCRYPTION_KEY = Config.ENCRYPTION_KEY
 
 # If no key is set, generate one (but warn)
 if not ENCRYPTION_KEY:
-    logger.warning("⚠️ ENCRYPTION_KEY not set - Generating temporary key. This will break across restarts!")
+    logger.warning("ENCRYPTION_KEY not set - Generating temporary key. This will break across restarts!")
     ENCRYPTION_KEY = Fernet.generate_key().decode()
 
 # Ensure key is bytes
@@ -22,7 +22,7 @@ if isinstance(ENCRYPTION_KEY, str):
 try:
     cipher = Fernet(ENCRYPTION_KEY)
 except Exception as e:
-    logger.error(f"❌ Failed to initialize encryption: {e}")
+    logger.error(f"Failed to initialize encryption: {e}")
     # Fallback: create a new key
     ENCRYPTION_KEY = Fernet.generate_key()
     cipher = Fernet(ENCRYPTION_KEY)
