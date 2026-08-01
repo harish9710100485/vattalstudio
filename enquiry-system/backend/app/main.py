@@ -18,12 +18,12 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # ===== DATABASE SETUP =====
-logger.info("📊 Creating database tables...")
+logger.info("Creating database tables...")
 try:
     Base.metadata.create_all(bind=engine)
-    logger.info("✅ Database tables created/verified")
+    logger.info("Database tables created/verified")
 except Exception as e:
-    logger.error(f"❌ Database creation error: {e}")
+    logger.error(f"Database creation error: {e}")
 
 # ===== CREATE DEFAULT USERS =====
 def create_default_users():
@@ -39,9 +39,9 @@ def create_default_users():
                 is_active=True
             )
             db.add(admin)
-            logger.info(f"✅ Admin user created: {Config.ADMIN_EMAIL}")
+            logger.info(f"Admin user created: {Config.ADMIN_EMAIL}")
         else:
-            logger.info(f"✅ Admin user already exists: {Config.ADMIN_EMAIL}")
+            logger.info(f"Admin user already exists: {Config.ADMIN_EMAIL}")
         
         employee = db.query(User).filter(User.email == "employee@example.com").first()
         if not employee:
@@ -53,13 +53,13 @@ def create_default_users():
                 is_active=True
             )
             db.add(employee)
-            logger.info("✅ Employee user created: employee@example.com")
+            logger.info("Employee user created: employee@example.com")
         else:
-            logger.info("✅ Employee user already exists: employee@example.com")
+            logger.info("Employee user already exists: employee@example.com")
         
         db.commit()
     except Exception as e:
-        logger.error(f"❌ Error creating users: {e}")
+        logger.error(f"Error creating users: {e}")
         db.rollback()
     finally:
         db.close()
@@ -68,9 +68,9 @@ create_default_users()
 
 # ===== TEST DATABASE =====
 if test_connection():
-    logger.info("✅ Database connection successful")
+    logger.info("Database connection successful")
 else:
-    logger.warning("⚠️ Database connection failed")
+    logger.warning("Database connection failed")
 
 # ===== CREATE FASTAPI APP =====
 app = FastAPI(
@@ -108,15 +108,15 @@ logger.info(f"🌐 CORS allowed origins: {allowed_origins}")
 # ===== CREATE UPLOADS DIRECTORY =====
 try:
     os.makedirs(Config.UPLOAD_DIR, exist_ok=True)
-    logger.info(f"📁 Upload directory: {Config.UPLOAD_DIR}")
+    logger.info(f"Upload directory: {Config.UPLOAD_DIR}")
 except Exception as e:
-    logger.error(f"❌ Failed to create upload directory: {e}")
+    logger.error(f"Failed to create upload directory: {e}")
 
 # Mount static files for uploads
 try:
     app.mount("/uploads", StaticFiles(directory=Config.UPLOAD_DIR), name="uploads")
 except Exception as e:
-    logger.warning(f"⚠️ Could not mount uploads directory: {e}")
+    logger.warning(f"Could not mount uploads directory: {e}")
 
 # ===== INCLUDE ROUTES =====
 app.include_router(router, prefix="/api/v1")
@@ -149,9 +149,9 @@ async def health():
 @app.on_event("startup")
 async def startup():
     logger.info("=" * 60)
-    logger.info("🚀 Vattal Studios API Started")
-    logger.info(f"📡 Environment: {Config.ENVIRONMENT}")
-    logger.info(f"🗄️  Database: {Config.DATABASE_URL.split('@')[0] if '@' in Config.DATABASE_URL else 'Configured'}")
-    logger.info(f"📁 Uploads: {Config.UPLOAD_DIR}")
-    logger.info(f"🔐 Admin: {Config.ADMIN_EMAIL}")
+    logger.info("Vattal Studios API Started")
+    logger.info(f"Environment: {Config.ENVIRONMENT}")
+    logger.info(f"Database: {Config.DATABASE_URL.split('@')[0] if '@' in Config.DATABASE_URL else 'Configured'}")
+    logger.info(f"Uploads: {Config.UPLOAD_DIR}")
+    logger.info(f"Admin: {Config.ADMIN_EMAIL}")
     logger.info("=" * 60)
