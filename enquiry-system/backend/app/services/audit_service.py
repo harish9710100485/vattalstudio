@@ -28,9 +28,9 @@ def log_action(
         )
         db.add(audit_log)
         db.commit()
-        logger.debug(f"📝 Audit log: {action} by user {user_id}")
+        logger.debug(f"Audit log: {action} by user {user_id}")
         return audit_log
     except Exception as e:
-        logger.error(f"⚠️ Audit log error: {e}")
+        logger.error(f"Audit log error: {e}")
         db.rollback()
         return None
