@@ -1,4 +1,5 @@
-// Enquiry Form - Cinema Version
+let selectedFile = null;
+
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('enquiryForm');
     if (form) {
@@ -65,6 +66,9 @@ function handleFile(file) {
         return;
     }
 
+    // Store file for upload
+    selectedFile = file;
+
     const fileName = document.getElementById('fileName');
     const filePreview = document.getElementById('filePreview');
     const uploadArea = document.getElementById('uploadArea');
@@ -82,6 +86,7 @@ function removeFile() {
     if (fileInput) fileInput.value = '';
     if (filePreview) filePreview.classList.add('hidden');
     if (uploadArea) uploadArea.classList.remove('hidden');
+    selectedFile = null;
 }
 
 async function submitEnquiry(e) {
@@ -159,7 +164,7 @@ async function submitEnquiry(e) {
             return;
         }
 
-        // Prepare data (without source field)
+        // Prepare data
         const data = {
             name: name,
             email: email,
@@ -171,29 +176,19 @@ async function submitEnquiry(e) {
             services: services,
             captcha: true
         };
-
-
-        // If there's a file, upload it first
         let fileUrl = null;
         if (selectedFile) {
             try {
-                const formData = new FormData();
-                formData.append('file', selectedFile);
+                console.log('📎 Uploading file:', selectedFile.name);
                 
-                const uploadResponse = await fetch('http://localhost:8000/api/v1/enquiries/upload', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${api.token || ''}`
-                    },
-                    body: formData
-                });
+                // Use the api.uploadFile method instead of hardcoded localhost
+                const uploadResult = await api.uploadFile('/enquiries/upload', selectedFile);
+                fileUrl = uploadResult.file_url;
+                console.log('📎 File uploaded successfully:', fileUrl);
                 
-                if (uploadResponse.ok) {
-                    const uploadResult = await uploadResponse.json();
-                    fileUrl = uploadResult.file_url;
-                }
             } catch (uploadError) {
                 console.warn('File upload error:', uploadError);
+                showToast('warning', 'File upload failed, but enquiry will still be submitted.');
             }
         }
 
@@ -219,7 +214,6 @@ async function submitEnquiry(e) {
         showToast('success', 'Enquiry submitted successfully!');
 
     } catch (error) {
-        console.error('❌ Submit error:', error);
         showToast('error', error.message || 'Failed to submit enquiry');
     } finally {
         btn.disabled = false;
@@ -233,93 +227,4 @@ function closeSuccess() {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
     }
-}
-
-// File upload handlers
-document.addEventListener('DOMContentLoaded', function() {
-    const fileInput = document.getElementById('fileUpload');
-    const dropZone = document.getElementById('dropZone');
-    
-    if (fileInput && dropZone) {
-        // Click to upload
-        dropZone.addEventListener('click', () => fileInput.click());
-        
-        // Drag and drop events
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('border-amber-500', 'bg-amber-50');
-        });
-        
-        dropZone.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('border-amber-500', 'bg-amber-50');
-        });
-        
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('border-amber-500', 'bg-amber-50');
-            const file = e.dataTransfer.files[0];
-            if (file) {
-                handleFile(file);
-            }
-        });
-        
-        // File input change
-        fileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                handleFile(file);
-            }
-        });
-    }
-
-    // Char counter
-    const description = document.getElementById('description');
-    const charCount = document.getElementById('charCount');
-    if (description && charCount) {
-        description.addEventListener('input', function() {
-            charCount.textContent = `${this.value.length} / 3000 characters`;
-        });
-    }
-});
-
-let selectedFile = null;
-
-function handleFile(file) {
-    const validTypes = ['application/pdf', 'application/msword', 
-                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                        'image/png', 'image/jpeg'];
-    const maxSize = 5 * 1024 * 1024; // 5MB
-
-    if (!validTypes.includes(file.type)) {
-        showToast('error', 'Invalid file type. Please upload PDF, DOC, DOCX, PNG, or JPG.');
-        return;
-    }
-
-    if (file.size > maxSize) {
-        showToast('error', 'File size exceeds 5MB limit.');
-        return;
-    }
-
-    // Store file for upload
-    selectedFile = file;
-
-    const fileName = document.getElementById('fileName');
-    const filePreview = document.getElementById('filePreview');
-    const uploadArea = document.getElementById('uploadArea');
-
-    if (fileName) fileName.textContent = file.name;
-    if (filePreview) filePreview.classList.remove('hidden');
-    if (uploadArea) uploadArea.classList.add('hidden');
-}
-
-function removeFile() {
-    const fileInput = document.getElementById('fileUpload');
-    const filePreview = document.getElementById('filePreview');
-    const uploadArea = document.getElementById('uploadArea');
-
-    if (fileInput) fileInput.value = '';
-    if (filePreview) filePreview.classList.add('hidden');
-    if (uploadArea) uploadArea.classList.remove('hidden');
-    selectedFile = null;
 }
