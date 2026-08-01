@@ -14,7 +14,6 @@ const API_URL = (() => {
     return 'http://localhost:8000/api/v1';
 })();
 
-console.log(`API URL: ${API_URL}`);
 
 // ===== API CLIENT =====
 
