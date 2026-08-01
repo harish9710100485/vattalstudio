@@ -19,7 +19,7 @@ class Config:
     
     # If not found, use fallback
     if not DATABASE_URL:
-        logger.warning("⚠️ DATABASE_URL not found in environment! Using fallback.")
+        logger.warning("DATABASE_URL not found in environment! Using fallback.")
         DATABASE_URL = 'postgresql://postgres:1234@localhost:5432/enquiry_db'
     
     # Convert postgres:// to postgresql:// if needed
@@ -33,7 +33,7 @@ class Config:
     
     # File Upload
     UPLOAD_DIR = os.getenv('UPLOAD_DIR', './uploads')
-    logger.info(f"📁 UPLOAD_DIR from env: {UPLOAD_DIR}")
+    logger.info(f"UPLOAD_DIR from env: {UPLOAD_DIR}")
     
     # Admin Credentials
     ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'admin@vattalstudios.com')
