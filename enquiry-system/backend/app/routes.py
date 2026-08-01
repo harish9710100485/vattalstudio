@@ -56,7 +56,7 @@ def log_action(db: Session, user_id: int, action: str, table_name: str = None,
         db.commit()
         return audit_log
     except Exception as e:
-        logger.error(f"⚠️ Audit log error: {e}")
+        logger.error(f"Audit log error: {e}")
         db.rollback()
         return None
 
@@ -66,11 +66,11 @@ def log_action(db: Session, user_id: int, action: str, table_name: str = None,
 async def login(data: LoginRequest, request: Request, db: Session = Depends(get_db)):
     """Login endpoint - PUBLIC (no token required)"""
     try:
-        logger.info(f"🔐 Login attempt for: {data.email}")
+        logger.info(f"Login attempt for: {data.email}")
         
         user = db.query(User).filter(User.email == data.email).first()
         if not user:
-            logger.warning(f"❌ User not found: {data.email}")
+            logger.warning(f"User not found: {data.email}")
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
         if not user.is_active:
@@ -78,7 +78,7 @@ async def login(data: LoginRequest, request: Request, db: Session = Depends(get_
         
         is_valid = verify_password(data.password, user.password_hash)
         if not is_valid:
-            logger.warning(f"❌ Invalid password for: {data.email}")
+            logger.warning(f"Invalid password for: {data.email}")
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
         # Update last login
@@ -95,7 +95,7 @@ async def login(data: LoginRequest, request: Request, db: Session = Depends(get_
                 ip_address=client_ip
             )
         except Exception as e:
-            logger.error(f"⚠️ Login audit log error: {e}")
+            logger.error(f"Login audit log error: {e}")
             db.rollback()
         
         # Create tokens
@@ -109,7 +109,7 @@ async def login(data: LoginRequest, request: Request, db: Session = Depends(get_
             "type": "refresh"
         }, timedelta(days=7))
         
-        logger.info(f"✅ Login successful: {user.email}")
+        logger.info(f"Login successful: {user.email}")
         
         return {
             "access_token": access_token,
@@ -126,7 +126,7 @@ async def login(data: LoginRequest, request: Request, db: Session = Depends(get_
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"❌ Login error: {e}")
+        logger.error(f"Login error: {e}")
         import traceback
         traceback.print_exc()
         raise HTTPException(
@@ -144,7 +144,7 @@ async def create_enquiry(
 ):
     """Submit a new enquiry - PUBLIC"""
     try:
-        logger.info(f"📝 Creating new cinema enquiry...")
+        logger.info(f" Creating new cinema enquiry...")
         logger.info(f"   Name: {data.name}")
         logger.info(f"   Email: {data.email}")
         logger.info(f"   Project Type: {data.project_type}")
@@ -169,7 +169,7 @@ async def create_enquiry(
         db.add(enquiry)
         db.commit()
         db.refresh(enquiry)
-        logger.info(f"✅ Enquiry created with ID: {enquiry.id}")
+        logger.info(f"Enquiry created with ID: {enquiry.id}")
         
         return {
             "id": enquiry.id,
@@ -191,7 +191,7 @@ async def create_enquiry(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"❌ Create enquiry error: {e}")
+        logger.error(f"Create enquiry error: {e}")
         import traceback
         traceback.print_exc()
         raise HTTPException(
@@ -234,7 +234,7 @@ async def upload_file(file: UploadFile = File(...)):
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"❌ File upload error: {e}")
+        logger.error(f"File upload error: {e}")
         raise HTTPException(status_code=500, detail="File upload failed")
 
 # ==================== ADMIN ROUTES ====================
@@ -285,7 +285,7 @@ async def get_enquiries(
     try:
         skip = (page - 1) * per_page
         
-        logger.info(f"📋 Getting enquiries for admin: {current_user.email}")
+        logger.info(f"Getting enquiries for admin: {current_user.email}")
         
         query = db.query(Enquiry)
         
@@ -339,7 +339,7 @@ async def get_enquiries(
                 ip_address=client_ip
             )
         except Exception as e:
-            logger.error(f"⚠️ Audit log error: {e}")
+            logger.error(f"Audit log error: {e}")
             db.rollback()
         
         return {
@@ -351,7 +351,7 @@ async def get_enquiries(
         }
         
     except Exception as e:
-        logger.error(f"❌ Enquiries error: {e}")
+        logger.error(f"Enquiries error: {e}")
         import traceback
         traceback.print_exc()
         return {
@@ -387,7 +387,7 @@ async def get_enquiry(
                 ip_address=client_ip
             )
         except Exception as e:
-            logger.error(f"⚠️ Audit log error: {e}")
+            logger.error(f"Audit log error: {e}")
             db.rollback()
         
         return {
@@ -407,10 +407,10 @@ async def get_enquiry(
             "updated_at": enquiry.updated_at.isoformat() if enquiry.updated_at else None
         }
     except ValueError as e:
-        logger.error(f"❌ Invalid ID format: {enquiry_id}")
+        logger.error(f"Invalid ID format: {enquiry_id}")
         raise HTTPException(status_code=400, detail="Invalid ID format")
     except Exception as e:
-        logger.error(f"❌ Get enquiry error: {e}")
+        logger.error(f"Get enquiry error: {e}")
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
@@ -450,7 +450,7 @@ async def update_status(
                 ip_address=client_ip
             )
         except Exception as e:
-            logger.error(f"⚠️ Audit log error: {e}")
+            logger.error(f"Audit log error: {e}")
             db.rollback()
         
         return {
@@ -463,7 +463,7 @@ async def update_status(
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid ID format")
     except Exception as e:
-        logger.error(f"❌ Update status error: {e}")
+        logger.error(f"Update status error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/admin/enquiries/{enquiry_id}")
@@ -492,7 +492,7 @@ async def delete_enquiry(
                 ip_address=client_ip
             )
         except Exception as e:
-            logger.error(f"⚠️ Audit log error: {e}")
+            logger.error(f"Audit log error: {e}")
             db.rollback()
         
         db.delete(enquiry)
@@ -502,7 +502,7 @@ async def delete_enquiry(
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid ID format")
     except Exception as e:
-        logger.error(f"❌ Delete enquiry error: {e}")
+        logger.error(f"Delete enquiry error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/admin/stats")
@@ -513,7 +513,7 @@ async def get_stats(
 ):
     """Get dashboard statistics - ADMIN ONLY"""
     try:
-        logger.info(f"📊 Getting stats for admin: {current_user.email}")
+        logger.info(f"Getting stats for admin: {current_user.email}")
         
         total = db.query(Enquiry).count()
         pending = db.query(Enquiry).filter(Enquiry.status == "pending").count()
@@ -533,11 +533,11 @@ async def get_stats(
             "today": today_enquiries
         }
         
-        logger.info(f"📊 Stats result: {stats}")
+        logger.info(f"Stats result: {stats}")
         return stats
         
     except Exception as e:
-        logger.error(f"❌ Stats error: {e}")
+        logger.error(f"Stats error: {e}")
         import traceback
         traceback.print_exc()
         return {
@@ -588,7 +588,7 @@ async def create_user(
             ip_address=client_ip
         )
     except Exception as e:
-        logger.error(f"⚠️ Audit log error: {e}")
+        logger.error(f"Audit log error: {e}")
         db.rollback()
     
     return {
@@ -618,7 +618,7 @@ async def get_users(
             ip_address=client_ip
         )
     except Exception as e:
-        logger.error(f"⚠️ Audit log error: {e}")
+        logger.error(f"Audit log error: {e}")
         db.rollback()
     
     return [
@@ -668,12 +668,12 @@ async def toggle_user(
                 ip_address=client_ip
             )
         except Exception as e:
-            logger.error(f"⚠️ Audit log error: {e}")
+            logger.error(f"Audit log error: {e}")
             db.rollback()
         
         return {"message": f"User {'activated' if user.is_active else 'deactivated'}"}
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid ID format")
     except Exception as e:
-        logger.error(f"❌ Toggle user error: {e}")
+        logger.error(f"Toggle user error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
