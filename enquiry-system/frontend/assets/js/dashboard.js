@@ -38,17 +38,14 @@ function loadUserInfo() {
             const user = JSON.parse(userStr);
             const nameEl = document.getElementById('adminName');
             if (nameEl) nameEl.textContent = user.username || user.email || 'Admin';
-        } catch (e) {
-            console.log('No user info found');
         }
     }
 }
 
 async function loadStats() {
     try {
-        console.log('📊 Loading stats...');
+        
         const stats = await api.get('/admin/stats');
-        console.log('📊 Stats received:', stats);
         
         document.getElementById('statTotal').textContent = stats.total || 0;
         document.getElementById('statPending').textContent = stats.pending || 0;
