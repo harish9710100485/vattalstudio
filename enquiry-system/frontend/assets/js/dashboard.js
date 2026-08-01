@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadRecentEnquiries();
 });
 
-
 function loadUserInfo() {
     const userStr = localStorage.getItem('user');
     if (userStr && userStr !== 'undefined' && userStr !== 'null') {
@@ -38,13 +37,14 @@ function loadUserInfo() {
             const user = JSON.parse(userStr);
             const nameEl = document.getElementById('adminName');
             if (nameEl) nameEl.textContent = user.username || user.email || 'Admin';
+        } catch (e) {
+            console.error('Error loading user info:', e);
         }
     }
 }
 
 async function loadStats() {
     try {
-        
         const stats = await api.get('/admin/stats');
         
         document.getElementById('statTotal').textContent = stats.total || 0;
@@ -185,7 +185,7 @@ function createServicesChart(data) {
         .sort((a, b) => b.value - a.value);
     
     servicesChart = new Chart(ctx, {
-        type: 'bar',  // Use 'bar' type with indexAxis: 'y' for horizontal
+        type: 'bar',
         data: {
             labels: sorted.map(item => formatServices(item.label)),
             datasets: [{
@@ -197,7 +197,7 @@ function createServicesChart(data) {
             }]
         },
         options: {
-            indexAxis: 'y',  // This makes it horizontal
+            indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
@@ -373,27 +373,12 @@ function formatServices(service) {
     return map[service] || service;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Check if user is logged in
-    if (!checkAuth()) return;
-    
-    // Check if user is admin
-    const userStr = localStorage.getItem('user');
-    if (userStr) {
-        try {
-            const user = JSON.parse(userStr);
-            if (user.role !== 'admin') {
-                window.location.href = 'employee.html';
-                return;
-            }
-        } catch (e) {
-            window.location.href = 'login.html';
-            return;
-        }
+function checkAuth() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = 'login.html';
+        return false;
     }
-    
-    loadUserInfo();
-    loadStats();
-    loadCharts();
-    loadRecentEnquiries();
-});
+    api.token = token;
+    return true;
+}
