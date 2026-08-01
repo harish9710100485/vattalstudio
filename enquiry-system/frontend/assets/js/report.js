@@ -18,8 +18,6 @@ function loadUserInfo() {
             const user = JSON.parse(userStr);
             const nameEl = document.getElementById('adminName');
             if (nameEl) nameEl.textContent = user.username || user.email || 'Admin';
-        } catch (e) {
-            console.log('No user info found');
         }
     }
 }
@@ -50,10 +48,9 @@ async function loadEnquiries(page = 1) {
         if (filters.status) params.append('status', filters.status);
         if (filters.project_type) params.append('project_type', filters.project_type);
         
-        console.log('📋 Loading page:', currentPage, 'params:', params.toString());
         
         const data = await api.get(`/admin/enquiries?${params}`);
-        console.log('📋 Data:', data);
+
         
         totalPages = data.total_pages || 1;
         
@@ -208,7 +205,6 @@ function renderPagination(data) {
 
 async function viewEnquiry(id) {
     try {
-        console.log('🔍 Viewing enquiry with ID:', id);
         const e = await api.get(`/admin/enquiries/${id}`);
         
         const statusColors = {
