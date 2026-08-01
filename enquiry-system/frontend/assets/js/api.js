@@ -1,9 +1,3 @@
-// ========================================
-// VATTAL STUDIOS - API CLIENT
-// ========================================
-
-// ===== DETERMINE API URL =====
-
 const API_URL = (() => {
     // Production on Vercel or Render
     if (window.location.hostname.includes('vercel.app') || 
