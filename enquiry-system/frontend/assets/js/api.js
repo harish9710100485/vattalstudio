@@ -14,7 +14,7 @@ const API_URL = (() => {
     return 'http://localhost:8000/api/v1';
 })();
 
-console.log(`🌐 API URL: ${API_URL}`);
+console.log(`API URL: ${API_URL}`);
 
 // ===== API CLIENT =====
 
@@ -51,7 +51,6 @@ const api = {
         }
 
         try {
-            console.log(`📤 ${method} ${url}`);
             const res = await fetch(url, options);
             
             // Handle 401 Unauthorized - redirect to login
@@ -70,16 +69,14 @@ const api = {
             
             // Handle error responses
             if (!res.ok) {
-                console.error('❌ Response error:', result);
+                console.error('Response error:', result);
                 const errorMsg = result.detail || result.message || 'Request failed';
                 throw new Error(errorMsg);
             }
-            
-            console.log(`📥 Response:`, result);
             return result;
             
         } catch (error) {
-            console.error('❌ API Error:', error);
+            /*console.error('API Error:', error);*/
             throw error;
         }
     },
@@ -147,7 +144,6 @@ const api = {
         };
 
         try {
-            console.log(`📤 Uploading to ${url}`);
             const res = await fetch(url, options);
             
             if (res.status === 401) {
@@ -165,8 +161,6 @@ const api = {
                 console.error('❌ Upload error:', result);
                 throw new Error(result.detail || result.message || 'Upload failed');
             }
-            
-            console.log(`📥 Upload response:`, result);
             return result;
             
         } catch (error) {
@@ -189,5 +183,3 @@ function getApiUrl() {
 
 window.getApiUrl = getApiUrl;
 
-console.log('✅ API Client initialized');
-console.log(`🔗 Connected to: ${API_URL}`);
