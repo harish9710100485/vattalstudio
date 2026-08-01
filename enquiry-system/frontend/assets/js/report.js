@@ -18,6 +18,8 @@ function loadUserInfo() {
             const user = JSON.parse(userStr);
             const nameEl = document.getElementById('adminName');
             if (nameEl) nameEl.textContent = user.username || user.email || 'Admin';
+        } catch (e) {
+            console.error('Error loading user info:', e);
         }
     }
 }
@@ -48,9 +50,7 @@ async function loadEnquiries(page = 1) {
         if (filters.status) params.append('status', filters.status);
         if (filters.project_type) params.append('project_type', filters.project_type);
         
-        
         const data = await api.get(`/admin/enquiries?${params}`);
-
         
         totalPages = data.total_pages || 1;
         
@@ -470,4 +470,15 @@ function formatProductionStage(stage) {
 function formatSource(source) {
     const map = { 'google': 'Google Search', 'social': 'Social Media', 'referral': 'Referral', 'linkedin': 'LinkedIn', 'film-festival': 'Film Festival', 'industry': 'Industry Network', 'other': 'Other' };
     return map[source] || source || 'N/A';
+}
+
+// ===== ADD MISSING checkAuth FUNCTION =====
+function checkAuth() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = 'login.html';
+        return false;
+    }
+    api.token = token;
+    return true;
 }
